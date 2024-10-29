@@ -1,9 +1,10 @@
 import './App.css';
+import Scene from './planet/Planet';
 
 function App() {
   return (
     <div className="App">
-      <p>hola mundo</p>
+      <Scene/>
     </div>
   );
 }
