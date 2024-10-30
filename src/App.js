@@ -1,5 +1,5 @@
 import './App.css';
-import Scene from './planet/Planet';
+import Scene from './scene/Scene';
 
 function App() {
   return (
