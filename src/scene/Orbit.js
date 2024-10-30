@@ -1,8 +1,7 @@
 import { Line } from "@react-three/drei";
 
-const Orbit = () => {
-    const radius = 1;
-    const segments = 100;
+const Orbit = ({radius}) => {
+    const segments = 1000;
     const points = [];
     
     for (let i = 0; i <= segments; i++) {
@@ -10,7 +9,7 @@ const Orbit = () => {
         points.push([Math.cos(angle) * radius, 0, Math.sin(angle) * radius]);
     }
 
-    return <Line points={points} color="skyblue" lineWidth={2} />;
+    return <Line points={points} color="skyblue" lineWidth={0.4} />;
 };
 
 
