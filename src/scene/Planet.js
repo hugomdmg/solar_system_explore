@@ -21,17 +21,18 @@ const Planet = ({ planet, onClick }) => {
 
     return (
         <>
-            <mesh ref={meshRef} onClick={() => onClick(planet)} position={position}>
-                <sphereGeometry args={[0.1, 32, 32]} />
+            <mesh onClick={() => onClick(planet)} position={position}>
+                <sphereGeometry args={[0.1, 64, 64]} />
                 <meshStandardMaterial
                     color="blue"
                     emissive="white"
                     transparent
                     opacity={0.2}
                     emissiveIntensity={10}
+                    //visible={planet.name != 'moon'}
                 />
             </mesh>
-            <mesh position={position}>
+            <mesh ref={meshRef} position={position}>
                 <sphereGeometry args={[planet.radius, 128, 128]} />
                 <meshStandardMaterial
                     map={texture}

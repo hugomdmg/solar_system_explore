@@ -1,7 +1,7 @@
 import { Line } from "@react-three/drei";
 
 const Orbit = ({radius}) => {
-    const segments = 1000;
+    const segments = 10000;
     const points = [];
     
     for (let i = 0; i <= segments; i++) {
