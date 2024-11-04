@@ -15,7 +15,7 @@ planets.forEach((planet) => {
         planet.velocity.vz = Math.sqrt(G * planets[0].mass / planet.position.x) / 2.85
     }
     if (planet.name == 'moon') {
-        planet.velocity.vz = 1.01*Math.sqrt(G * planets[0].mass / planet.position.x) / 2.85
+        planet.velocity.vz = 1.01 * Math.sqrt(G * planets[0].mass / planet.position.x) / 2.85
     }
 })
 
@@ -27,11 +27,65 @@ function Scene() {
     let [t, setT] = useState(200000)
     const gravity = new Gravity(G)
 
+    //===================
+
+    let shipData = {
+        name: 'ship',
+        radius: 0.5,
+        mass: 0,
+        position: {
+            x: 1,
+            y: 0,
+            z: 1
+        },
+        velocity: {
+            vx: 0.001,
+            vy: 0,
+            vz: 0
+        },
+        rotation: 0.0001
+    }
+
+    const [ship, setShip] = useState(shipData)
+
+    function actionShip(event){
+        switch (event.key) {
+            case 'a':
+                ship.position.x += 0.1
+                setShip(ship)
+                break
+            case 'd':
+                ship.position.x -= 0.1
+                setShip(ship)
+                break
+            default:
+                break
+        }
+    }
+
+    function moveShip(){
+        ship.position.x += ship.velocity.vx
+        ship.position.y += ship.velocity.vy
+        ship.position.z += ship.velocity.vz
+        setShip(ship)
+
+    }
+
+
+
+
+    //===================
+
+
+
+
+
     const handlePlanetClick = (planet) => {
         setSelectedPlanet(planet)
     }
 
     const handleKeyDown = useCallback((event) => {
+        actionShip(event)
         switch (event.key) {
             case 'x':
                 if (t <= 500000) {
@@ -58,6 +112,7 @@ function Scene() {
     }, [handleKeyDown])
 
     useFrame(() => {
+        moveShip()
         setBodies((prevPlanets) => gravity.gravitationalField(prevPlanets, t))
         bodies.forEach((body) => {
             if (body.name == selectedPlanet.name) {
@@ -71,6 +126,16 @@ function Scene() {
 
     return (
         <>
+            <mesh onClick={() => { }} position={[ship.position.x, ship.position.y, ship.position.z]}>
+                <sphereGeometry args={[0.01, 32, 32]} />
+                <meshStandardMaterial
+                    color="blue"
+                    emissive="white"
+                    transparent
+                    opacity={0.5}
+                    emissiveIntensity={10}
+                />
+            </mesh>
             {bodies.map((planet, index) => (
                 <Planet
                     key={index}
