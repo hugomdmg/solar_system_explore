@@ -5,6 +5,14 @@ import Planet from './Planet'
 import planets from '../infrastructure/data_planets'
 import Gravity from '../infrastructure/gravity'
 
+//=================
+import { Line } from "@react-three/drei";
+import { useLoader } from '@react-three/fiber';
+import * as THREE from 'three';
+import Ship from '../infrastructure/ship'
+//-------------------
+
+
 let G = 6.674 * Math.pow(10, -11) / Math.pow(10, 4)
 
 planets.forEach((planet) => {
@@ -29,48 +37,10 @@ function Scene() {
 
     //===================
 
-    let shipData = {
-        name: 'ship',
-        radius: 0.5,
-        mass: 0,
-        position: {
-            x: 1,
-            y: 0,
-            z: 1
-        },
-        velocity: {
-            vx: 0.001,
-            vy: 0,
-            vz: 0
-        },
-        rotation: 0.0001
-    }
 
-    const [ship, setShip] = useState(shipData)
-
-    function actionShip(event){
-        switch (event.key) {
-            case 'a':
-                ship.position.x += 0.1
-                setShip(ship)
-                break
-            case 'd':
-                ship.position.x -= 0.1
-                setShip(ship)
-                break
-            default:
-                break
-        }
-    }
-
-    function moveShip(){
-        ship.position.x += ship.velocity.vx
-        ship.position.y += ship.velocity.vy
-        ship.position.z += ship.velocity.vz
-        setShip(ship)
-
-    }
-
+    const [explore, setExplore] = useState(false)
+    const [ship, setShip] = useState(new Ship())
+    const [scale, setScale] = useState(1)
 
 
 
@@ -85,7 +55,7 @@ function Scene() {
     }
 
     const handleKeyDown = useCallback((event) => {
-        actionShip(event)
+        ship.actionShip(event)
         switch (event.key) {
             case 'x':
                 if (t <= 500000) {
@@ -101,6 +71,8 @@ function Scene() {
                     setT((prevT) => prevT - 500000)
                 }
                 break
+            case 't':
+                setExplore(explore => !explore)
             default:
                 break
         }
@@ -112,10 +84,19 @@ function Scene() {
     }, [handleKeyDown])
 
     useFrame(() => {
-        moveShip()
+        if (explore) {
+            setScale(100)
+            ship.moveShip()
+            camera.position.x = ship.view.x
+            camera.position.y = ship.view.y
+            camera.position.z = ship.view.z
+            camera.lookAt(ship.position.x, ship.position.y, ship.position.z)
+        }else{
+            setScale(1)
+        }
         setBodies((prevPlanets) => gravity.gravitationalField(prevPlanets, t))
         bodies.forEach((body) => {
-            if (body.name == selectedPlanet.name) {
+            if (body.name == selectedPlanet.name && !explore) {
                 const { x, y, z } = body.position
                 orbitControlsRef.current.target.set(x, y, z)
                 camera.lookAt(x, y, z)
@@ -126,20 +107,12 @@ function Scene() {
 
     return (
         <>
-            <mesh onClick={() => { }} position={[ship.position.x, ship.position.y, ship.position.z]}>
-                <sphereGeometry args={[0.01, 32, 32]} />
-                <meshStandardMaterial
-                    color="blue"
-                    emissive="white"
-                    transparent
-                    opacity={0.5}
-                    emissiveIntensity={10}
-                />
-            </mesh>
+            <Line points={ship.getPoints()} color="skyblue" lineWidth={2} />
             {bodies.map((planet, index) => (
                 <Planet
                     key={index}
                     planet={planet}
+                    scale = {scale}
                     onClick={() => handlePlanetClick(planet)}
                 />
             ))}

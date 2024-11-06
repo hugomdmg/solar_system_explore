@@ -2,15 +2,15 @@ import { useLoader, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import React, { useRef } from 'react';
 import Orbit from './Orbit';
-import Gravity from '../infrastructure/gravity';
+import Dinamics from '../infrastructure/dinamics';
 
-const gravity = new Gravity();
+const dinamics = new Dinamics();
 
-const Planet = ({ planet, onClick }) => {
+const Planet = ({ scale, planet, onClick }) => {
     const texture = useLoader(THREE.TextureLoader, '/maps/' + planet.name + '.jpg');
     const meshRef = useRef();
     const light = planet.name === 'sun' ? 10 : 0;
-    const radius = gravity.distance({ x: 0, y: 0, z: 0 }, planet.position);
+    const radius = dinamics.distance({ x: 0, y: 0, z: 0 }, planet.position);
     const position = [planet.position.x, planet.position.y, planet.position.z];
 
     useFrame(() => {
@@ -33,7 +33,7 @@ const Planet = ({ planet, onClick }) => {
                 />
             </mesh>
             <mesh ref={meshRef} position={position}>
-                <sphereGeometry args={[planet.radius, 128, 128]} />
+                <sphereGeometry args={[scale*planet.radius, 128, 128]} />
                 <meshStandardMaterial
                     map={texture}
                     color="white"
