@@ -95,7 +95,6 @@ function Scene() {
         const now = Date.now();
         if (now - lastUpdate > 60) {
             updateShips();
-            setLastUpdate(now);
         }
 
         const { explore, selectedPlanet, t, scale } = simulationState
