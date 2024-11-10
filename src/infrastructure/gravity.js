@@ -10,12 +10,10 @@ class Gravity {
                 ay = this.axisGravity('y', d, point1, point2, mass1, mass2),
                 az = this.axisGravity('z', d, point1, point2, mass1, mass2);
 
-            // Calcular la nueva posición sin modificar el original
             const newX = point1.x + velocity1.vx * t + 0.5 * ax * Math.pow(t, 2);
             const newY = point1.y + velocity1.vy * t + 0.5 * ay * Math.pow(t, 2);
             const newZ = point1.z + velocity1.vz * t + 0.5 * az * Math.pow(t, 2);
 
-            // Calcular la nueva velocidad
             const newVx = velocity1.vx + ax * t;
             const newVy = velocity1.vy + ay * t;
             const newVz = velocity1.vz + az * t;
@@ -44,7 +42,6 @@ class Gravity {
     }
 
     gravitationalField(bodies, t) {
-        // Crear una copia profunda de los cuerpos, con nuevas posiciones y velocidades
         const updatedBodies = bodies.map((body) => ({
             ...body,
             position: { ...body.position },
@@ -54,7 +51,6 @@ class Gravity {
         updatedBodies.forEach((body, i) => {
             bodies.forEach((otherBody, j) => {
                 if (i !== j) {
-                    // Obtener las nuevas posiciones y velocidades sin modificar el objeto actual
                     const { position, velocity } = this.velocityVector(
                         body.position,
                         otherBody.position,
@@ -64,7 +60,6 @@ class Gravity {
                         otherBody.mass,
                         t
                     );
-                    // Actualizar solo después de calcular todos los efectos gravitacionales
                     body.position = position;
                     body.velocity = velocity;
                 }

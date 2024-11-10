@@ -9,7 +9,7 @@ const Orbit = ({radius}) => {
         points.push([Math.cos(angle) * radius, 0, Math.sin(angle) * radius]);
     }
 
-    return <Line points={points} color="skyblue" lineWidth={0.4} />;
+    return <Line points={points} color="skyblue" lineWidth={0.2} />;
 };
 
 

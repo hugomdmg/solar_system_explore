@@ -5,6 +5,7 @@ import planets from '../infrastructure/data_planets'
 import Planet from './Planet'
 import Gravity from '../infrastructure/gravity'
 import Ship from '../infrastructure/ship'
+import Api from '../infrastructure/api'
 
 let G = 6.674 * Math.pow(10, -11) / Math.pow(10, 4)
 
@@ -30,6 +31,48 @@ function Scene() {
     const gravity = new Gravity(G)
     const [ship, setShip] = useState(new Ship())
 
+
+    //--------------
+    const api = new Api()
+    let ship2Data = {
+        position: { x: 0.2, y: 0, z: 0 },
+        R: {
+            ux: { x: 1, y: 0, z: 0 },
+            uy: { x: 0, y: 1, z: 0 },
+            uz: { x: 0, y: 0, z: 1 }
+        }
+    }
+    let shipData = {
+        R: {
+            ux: { x: 0.6994278004910671, y: 0.7032794192004119, z: -0.12727454745298178 },
+            uy: { x: 0.6994278004910671, y: 0.7032794192004119, z: -0.12727454745298178 },
+            uz: { x: 0.17902957342582432, y: 0, z: 0.9838436927881226 }
+        },
+        position: { x: 0.2, y: 0.1, z: 0 }
+    }
+
+    const [ship2, setShip2] = useState(new Ship(ship2Data))
+    const [ship3, setShip3] = useState(new Ship(shipData))
+    ship3.rotateXAxis(0)
+    ship3.rotateYAxis(0)
+    ship3.rotateZAxis(0)
+
+
+    let ships = [ship2, ship3]
+
+    const updateShip2 = async (data) => {
+        try {
+            const result = await api.getShips(data)
+            let n = new Ship(result.value)
+            n.setShipHorientation()
+            setShip2(n)
+        } catch (error) {
+            console.error("Error al obtener datos de getShips:", error);
+        }
+    };
+
+    //--------------
+
     const handlePlanetClick = (planet) => {
         setSimulationState((prev) => ({ ...prev, selectedPlanet: planet }))
     }
@@ -51,14 +94,17 @@ function Scene() {
                 break;
             default: break;
         }
-    }, [ship])
+    })
 
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [handleKeyDown, ship])
 
+
     useFrame(() => {
+        updateShip2(shipData)
+
         const { explore, selectedPlanet, t, scale } = simulationState
         if (explore) {
             setSimulationState((prev) => ({ ...prev, scale: 100 }))
@@ -68,9 +114,9 @@ function Scene() {
         } else {
             setSimulationState((prev) => ({ ...prev, scale: 1 }))
         }
-        
+
         setBodies((prevPlanets) => gravity.gravitationalField(prevPlanets, t))
-        
+
         bodies.forEach((body) => {
             if (body.name === selectedPlanet.name && !explore) {
                 const { x, y, z } = body.position
@@ -83,11 +129,18 @@ function Scene() {
 
     return (
         <>
+            {
+                ships.map((n_ship, index) => (
+                    <Line key={index} points={n_ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
+
+                ))
+            }
             <Line points={ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
+
             {bodies.map((planet, index) => (
-                 (
+                (
                     <Planet
-                        render = {camera.position.distanceTo(planet.position) < 0.6 || planet.name == 'sun'}
+                        render={camera.position.distanceTo(planet.position) < 0.6 || planet.name == 'sun'}
                         key={index}
                         planet={planet}
                         scale={simulationState.scale}
@@ -95,14 +148,11 @@ function Scene() {
                     />
                 )
             ))}
-            <ambientLight intensity={0.1} />
+            <ambientLight intensity={0.04} />
             <pointLight position={[0, 0, 0]} intensity={10} decay={1} />
             <Environment files="/maps/stars.jpg" background />
             <OrbitControls
                 ref={orbitControlsRef}
-                enableZoom={!simulationState.explore}
-                enableRotate={!simulationState.explore}
-                enablePan={!simulationState.explore}
                 maxDistance={simulationState.explore ? 500 : 50}
                 minDistance={simulationState.explore ? 1 : 0.00001}
             />

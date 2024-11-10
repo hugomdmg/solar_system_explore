@@ -31,7 +31,7 @@ class Dinamics {
         const cos = Math.cos(alfa), sin = Math.sin(alfa);
         const ux = rotationAxis.x, uy = rotationAxis.y, uz = rotationAxis.z;
         return cartesiansCoordenates.map((point) => {
-            const x = point.x, y = point.y, z = point.z; // Guardar coordenadas originales
+            const x = point.x, y = point.y, z = point.z;
             return {
                 x: x * (cos + ux * ux * (1 - cos)) + y * (ux * uy * (1 - cos) - uz * sin) + z * (ux * uz * (1 - cos) + uy * sin),
                 y: x * (uy * ux * (1 - cos) + uz * sin) + y * (cos + uy * uy * (1 - cos)) + z * (uy * uz * (1 - cos) - ux * sin),
@@ -50,6 +50,18 @@ class Dinamics {
 
     rotateZAxis(alfa, cartesiansCoordenates) {
         return this.rotate(alfa, { x: 0, y: 0, z: 1 }, cartesiansCoordenates)
+    }
+
+    rotationMatrix(v, m) {
+        let ux = m.ux
+        let uy = m.uy
+        let uz = m.uz
+        let vector = {
+            x: ux.x * v.x + ux.y * v.y + ux.z * v.z,
+            y: uy.x * v.x + uy.y * v.y + uy.z * v.z,
+            z: uz.x * v.x + uz.y * v.y + uz.z * v.z
+        }
+        return vector
     }
 }
 

@@ -9,7 +9,7 @@ const dinamics = new Dinamics();
 const Planet = ({ scale, planet, render, onClick }) => {
     const texture = useLoader(THREE.TextureLoader, '/maps/' + planet.name + '.jpg');
     const meshRef = useRef();
-    const light = planet.name === 'sun' ? 10 : 0;
+    const light = planet.name === 'sun' ? 1 : 0;
     const radius = dinamics.distance({ x: 0, y: 0, z: 0 }, planet.position);
     const position = [planet.position.x, planet.position.y, planet.position.z];
 
@@ -28,8 +28,8 @@ const Planet = ({ scale, planet, render, onClick }) => {
                     color="blue"
                     emissive="white"
                     transparent
-                    opacity={0.2}
-                    emissiveIntensity={10}
+                    opacity={0.1}
+                    emissiveIntensity={1}
                 //visible={planet.name != 'moon'}
                 />
             </mesh>}
