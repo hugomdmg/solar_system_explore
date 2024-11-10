@@ -29,43 +29,39 @@ function Scene() {
         scale: 1
     })
     const gravity = new Gravity(G)
-    const [ship, setShip] = useState(new Ship())
+    const [ship, setShip] = useState(() => {
+        const newShip = new Ship()
+        newShip.id = Math.random()
+        return newShip
+    })
 
 
     //--------------
     const api = new Api()
-    let ship2Data = {
-        position: { x: 0.2, y: 0, z: 0 },
-        R: {
-            ux: { x: 1, y: 0, z: 0 },
-            uy: { x: 0, y: 1, z: 0 },
-            uz: { x: 0, y: 0, z: 1 }
-        }
-    }
-    let shipData = {
-        R: {
-            ux: { x: 0.6994278004910671, y: 0.7032794192004119, z: -0.12727454745298178 },
-            uy: { x: 0.6994278004910671, y: 0.7032794192004119, z: -0.12727454745298178 },
-            uz: { x: 0.17902957342582432, y: 0, z: 0.9838436927881226 }
-        },
-        position: { x: 0.2, y: 0.1, z: 0 }
-    }
+    const [ships, setShips] = useState([]);
 
-    const [ship2, setShip2] = useState(new Ship(ship2Data))
-    const [ship3, setShip3] = useState(new Ship(shipData))
-    ship3.rotateXAxis(0)
-    ship3.rotateYAxis(0)
-    ship3.rotateZAxis(0)
-
-
-    let ships = [ship2, ship3]
-
-    const updateShip2 = async (data) => {
+    const updateShips = async () => {
         try {
-            const result = await api.getShips(data)
-            let n = new Ship(result.value)
-            n.setShipHorientation()
-            setShip2(n)
+            const data = {
+                id: ship.id,
+                R: ship.R,
+                position: ship.position
+            }
+            const result = await api.getShips(data);
+            console.log(result.value)
+            const updatedShips = result.value.map((shipData) => {
+                //  if (shipData.id != ship.id) {
+                let newShip = new Ship(shipData);
+                newShip.setShipHorientation();
+                newShip.rotateXAxis(0);
+                newShip.rotateYAxis(0);
+                newShip.rotateZAxis(0);
+                return newShip;
+                //  }
+            });
+
+            setShips(updatedShips);
+
         } catch (error) {
             console.error("Error al obtener datos de getShips:", error);
         }
@@ -103,7 +99,7 @@ function Scene() {
 
 
     useFrame(() => {
-        updateShip2(shipData)
+        updateShips()
 
         const { explore, selectedPlanet, t, scale } = simulationState
         if (explore) {
@@ -130,10 +126,13 @@ function Scene() {
     return (
         <>
             {
-                ships.map((n_ship, index) => (
-                    <Line key={index} points={n_ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
-
-                ))
+                ships.map((n_ship, index) => {
+                    if (n_ship.id != ship.id) {
+                        return (
+                            <Line key={index} points={n_ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
+                        )
+                    }
+                })
             }
             <Line points={ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
 

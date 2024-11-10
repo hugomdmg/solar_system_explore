@@ -1,5 +1,8 @@
 import Dinamics from "./dinamics"
 export default class Ship extends Dinamics {
+
+    id = 0
+
     R = {
         ux: { x: 1, y: 0, z: 0 },
         uy: { x: 0, y: 1, z: 0 },
@@ -28,6 +31,7 @@ export default class Ship extends Dinamics {
         if(data){
             this.position = data.position
             this.R = data.R
+            this.id = data.id
         }
     }
 
