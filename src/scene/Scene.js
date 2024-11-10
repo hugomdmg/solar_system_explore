@@ -34,9 +34,6 @@ function Scene() {
         newShip.id = Math.random()
         return newShip
     })
-
-
-    //--------------
     const api = new Api()
     const [ships, setShips] = useState([]);
 
@@ -50,14 +47,12 @@ function Scene() {
             const result = await api.getShips(data);
             console.log(result.value)
             const updatedShips = result.value.map((shipData) => {
-                //  if (shipData.id != ship.id) {
                 let newShip = new Ship(shipData);
                 newShip.setShipHorientation();
                 newShip.rotateXAxis(0);
                 newShip.rotateYAxis(0);
                 newShip.rotateZAxis(0);
                 return newShip;
-                //  }
             });
 
             setShips(updatedShips);
@@ -66,8 +61,6 @@ function Scene() {
             console.error("Error al obtener datos de getShips:", error);
         }
     };
-
-    //--------------
 
     const handlePlanetClick = (planet) => {
         setSimulationState((prev) => ({ ...prev, selectedPlanet: planet }))
@@ -99,7 +92,11 @@ function Scene() {
 
 
     useFrame(() => {
-        updateShips()
+        const now = Date.now();
+        if (now - lastUpdate > 60) {
+            updateShips();
+            setLastUpdate(now);
+        }
 
         const { explore, selectedPlanet, t, scale } = simulationState
         if (explore) {
