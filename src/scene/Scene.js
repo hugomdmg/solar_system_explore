@@ -22,6 +22,7 @@ function Scene() {
     const { camera } = useThree()
     const orbitControlsRef = useRef()
     const [bodies, setBodies] = useState(planets)
+    const [lastUpdate, setLastUpdate] = useState(Date.now());
     const [simulationState, setSimulationState] = useState({
         selectedPlanet: bodies[0],
         t: 200000,
@@ -95,6 +96,7 @@ function Scene() {
         const now = Date.now();
         if (now - lastUpdate > 60) {
             updateShips();
+            setLastUpdate(now);
         }
 
         const { explore, selectedPlanet, t, scale } = simulationState
