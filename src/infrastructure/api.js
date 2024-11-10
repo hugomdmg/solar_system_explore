@@ -1,7 +1,7 @@
 export default class Api {
 
     development_url = 'http://localhost:3000'
-    production_url = 'https://solar-system-api-seven.vercel.app/'
+    production_url = 'https://solar-system-api-seven.vercel.app'
 
     constructor() { }
 
