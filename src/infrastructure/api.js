@@ -6,12 +6,12 @@ export default class Api {
     constructor() { }
 
     async get(url) {
-        const response = await fetch(this.production_url + url)
+        const response = await fetch(this.development_url + url)
         return response.json()
     }
 
     async post(url, data) {
-        const response = await fetch(this.production_url + url, {
+        const response = await fetch(this.development_url + url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -23,6 +23,10 @@ export default class Api {
 
     async getShips(ship){
         return await this.post('/ships', ship)
+    }
+
+    async getShots(shot){
+        return await this.post('/shots', shot)
     }
 
 }

@@ -49,7 +49,6 @@ export default class Ship extends Dinamics {
             case 'q': this.rotateXAxis(-1); break;
             case 'e': this.rotateXAxis(1); break;
             case 'r': this.accelerate(1); break;
-            case 'f': this.accelerate(-1); break;
             case 'g': this.break(); break;
             default: break;
         }
