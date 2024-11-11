@@ -63,22 +63,6 @@ const planets = [
         },
         rotation: 0.0002
     }, 
-    //{
-    //     name: 'moon',
-    //     radius: 1.737 * Math.pow(10, 6),
-    //     mass: 7.34 * Math.pow(10, 22),
-    //     position: {
-    //         x: 1.496 * Math.pow(10, 11)-3.84*Math.pow(10, 8),
-    //         y: 0,
-    //         z: 0
-    //     },
-    //     velocity: {
-    //         vx: 0,
-    //         vy: 0,
-    //         vz: 0
-    //     },
-    //     rotation: 0
-    // },
     {
         name: 'mars',
         radius: 3.389 * Math.pow(10, 6),
@@ -146,6 +130,22 @@ const planets = [
         mass: 1.024 * Math.pow(10, 26),
         position: {
             x: 4.5 * Math.pow(10, 12),
+            y: 0,
+            z: 0,
+        },
+        velocity: {
+            vx: 0,
+            vy: 0,
+            vz: 0
+        },
+        rotation: 0.0005
+    },
+    {
+        name: 'pluto',
+        radius: 1.188 * Math.pow(10, 6),
+        mass: 1.31 * Math.pow(10, 22),
+        position: {
+            x: 5.9 * Math.pow(10, 12),
             y: 0,
             z: 0,
         },

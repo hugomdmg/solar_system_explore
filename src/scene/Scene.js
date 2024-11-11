@@ -14,7 +14,7 @@ planets.forEach((planet) => {
     planet.position.x = planet.position.x / Math.pow(10, 11)
     planet.radius = planet.radius / Math.pow(10, 11)
     if (planet.name !== 'sun') {
-        planet.velocity.vz = Math.sqrt(G * planets[0].mass / planet.position.x) / 2.85
+        planet.velocity.vz = Math.sqrt(G * planets[0].mass / planet.position.x) / 3
     }
 })
 
@@ -46,7 +46,6 @@ function Scene() {
                 position: ship.position
             }
             const result = await api.getShips(data);
-            console.log(result.value)
             const updatedShips = result.value.map((shipData) => {
                 let newShip = new Ship(shipData);
                 newShip.setShipHorientation();
@@ -59,7 +58,7 @@ function Scene() {
             setShips(updatedShips);
 
         } catch (error) {
-            console.error("Error al obtener datos de getShips:", error);
+            console.error("Error:", error);
         }
     };
 
