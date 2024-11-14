@@ -21,12 +21,16 @@ export default class Api {
         return await response.json();
     }
 
-    async getShips(ship){
+    async getShips(ship) {
         return await this.post('/ships', ship)
     }
 
-    async getShots(shot){
+    async getShots(shot) {
         return await this.post('/shots', shot)
+    }
+
+    async getShotsData() {
+        return await this.get('/shots-data')
     }
 
 }

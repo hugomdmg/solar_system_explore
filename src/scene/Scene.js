@@ -30,19 +30,33 @@ function Scene() {
         scale: 1
     })
     const gravity = new Gravity(G)
-    const [ship, setShip] = useState(() => {
-        const newShip = new Ship()
-        newShip.id = Math.random()
-        return newShip
-    })
     const api = new Api()
     const [ships, setShips] = useState([]);
+
+    //----------------------------
+
+    const [userId, setUserId] = useState(Math.random())
+    const [ship, setShip] = useState(() => {
+        const newShip = new Ship()
+        newShip.userId = Math.random()
+        return newShip
+    })
     const [shots, setShots] = useState([])
+
+    const getApiShots = async () => {
+        try {
+            let result = await api.getShotsData()
+            setShots(result.value);
+
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    }
 
     const updateShips = async () => {
         try {
             const data = {
-                id: ship.id,
+                userId: ship.userId,
                 R: ship.R,
                 position: ship.position
             }
@@ -50,9 +64,6 @@ function Scene() {
             const updatedShips = result.value.map((shipData) => {
                 let newShip = new Ship(shipData);
                 newShip.setShipHorientation();
-                newShip.rotateXAxis(0);
-                newShip.rotateYAxis(0);
-                newShip.rotateZAxis(0);
                 return newShip;
             });
 
@@ -62,27 +73,6 @@ function Scene() {
             console.error("Error:", error);
         }
     };
-
-    //-----------
-    const updateShots = () => {
-        setShots((shots) =>
-            shots.map((shot) => {
-                const newPosition = {
-                    x: shot.position.x + (shot.velocity.x || 0),
-                    y: shot.position.y + (shot.velocity.y || 0),
-                    z: shot.position.z + (shot.velocity.z || 0)
-                };
-                console.log("Updated shot position:", newPosition); // Para ver si se está moviendo
-                return {
-                    ...shot,
-                    position: newPosition
-                };
-            })
-        );
-    };
-    
-
-    //----
 
     const handlePlanetClick = (planet) => {
         setSimulationState((prev) => ({ ...prev, selectedPlanet: planet }))
@@ -104,20 +94,17 @@ function Scene() {
                 setSimulationState((prev) => ({ ...prev, explore: !prev.explore }))
                 break;
             case 'f':
-            case 'f':
-                console.log(ship.position);
                 let newShot = {
-                    position: { ...ship.position }, // Copiar la posición actual del ship
+                    userId: userId,
+                    id: Math.random(),
+                    position:ship.position,
                     velocity: {
-                        x: ship.direction.x * 0.01,
-                        y: ship.direction.y * 0.01,
-                        z: ship.direction.z * 0.01
+                        x: ship.direction.x * 0.01 + ship.velocity.vx,
+                        y: ship.direction.y * 0.01 + ship.velocity.vy,
+                        z: ship.direction.z * 0.01 + ship.velocity.vz
                     }
                 };
-                console.log("Shots before adding new shot:", shots);
-                setShots((shots) => [...shots, newShot]);
-                break;
-
+                api.getShots(newShot)
                 break;
             default: break;
         }
@@ -133,7 +120,7 @@ function Scene() {
         const now = Date.now();
         if (now - lastUpdate > 60) {
             updateShips();
-            updateShots()
+            getApiShots()
             setLastUpdate(now);
         }
 
@@ -161,23 +148,23 @@ function Scene() {
 
     return (
         <>
-            {shots.map((shot, index) => {
-                return (
-                    <mesh key={index} position={[shot.position.x, shot.position.y, shot.position.z]}>
-                        <sphereGeometry args={[0.001, 64, 64]} />
-                        <meshStandardMaterial
-                            color="red"
-                            emissive="red"
-                            transparent
-                            opacity={1}
-                            emissiveIntensity={1}
-                        />
-                    </mesh>
-                )
-            })}
+            {
+                shots.map((shot, index) => {
+                    return (
+                        <mesh key={index} position={[shot.position.x, shot.position.y, shot.position.z]}>
+                            <sphereGeometry args={[0.001, 64, 64]} />
+                            <meshStandardMaterial
+                                color="red"
+                                emissive="red"
+                                opacity={1}
+                            />
+                        </mesh>
+                    )
+                })
+            }
             {
                 ships.map((n_ship, index) => {
-                    if (n_ship.id != ship.id) {
+                    if (n_ship.userId != ship.userId) {
                         return (
                             <Line key={index} points={n_ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
                         )
@@ -185,7 +172,6 @@ function Scene() {
                 })
             }
             <Line points={ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
-
             {bodies.map((planet, index) => (
                 (
                     <Planet

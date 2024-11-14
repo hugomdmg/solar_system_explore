@@ -57,9 +57,9 @@ class Dinamics {
         let uy = m.uy
         let uz = m.uz
         let vector = {
-            x: ux.x * v.x + ux.y * v.y + ux.z * v.z,
-            y: uy.x * v.x + uy.y * v.y + uy.z * v.z,
-            z: uz.x * v.x + uz.y * v.y + uz.z * v.z
+            x: ux.x * v.x + uy.x * v.y + uz.x * v.z,
+            y: ux.y * v.x + uy.y * v.y + uz.y * v.z,
+            z: ux.z * v.x + uy.z * v.y + uz.z * v.z
         }
         return vector
     }

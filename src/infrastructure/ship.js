@@ -1,7 +1,7 @@
 import Dinamics from "./dinamics"
 export default class Ship extends Dinamics {
 
-    id = 0
+    userId = 0
 
     R = {
         ux: { x: 1, y: 0, z: 0 },
@@ -31,7 +31,7 @@ export default class Ship extends Dinamics {
         if(data){
             this.position = data.position
             this.R = data.R
-            this.id = data.id
+            this.userId = data.userId
         }
     }
 
@@ -110,7 +110,6 @@ export default class Ship extends Dinamics {
     break() {
         const reductionFactor = 0.4;
         const hold = 0.0001;
-
         this.velocity.vx = Math.abs(this.velocity.vx) < hold ? 0 : this.velocity.vx * reductionFactor;
         this.velocity.vy = Math.abs(this.velocity.vy) < hold ? 0 : this.velocity.vy * reductionFactor;
         this.velocity.vz = Math.abs(this.velocity.vz) < hold ? 0 : this.velocity.vz * reductionFactor;
