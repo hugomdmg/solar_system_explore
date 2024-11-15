@@ -1,5 +1,6 @@
 import React, { useRef, useState, useEffect, useCallback } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
+import { useFrame, useThree, useLoader } from '@react-three/fiber'
+import * as THREE from 'three';
 import { OrbitControls, Environment, Line } from '@react-three/drei'
 import planets from '../infrastructure/data_planets'
 import Planet from './Planet'
@@ -97,7 +98,7 @@ function Scene() {
                 let newShot = {
                     userId: userId,
                     id: Math.random(),
-                    position:ship.position,
+                    position: ship.position,
                     velocity: {
                         x: ship.direction.x * 0.01 + ship.velocity.vx,
                         y: ship.direction.y * 0.01 + ship.velocity.vy,
@@ -118,7 +119,7 @@ function Scene() {
 
     useFrame(() => {
         const now = Date.now();
-        if (now - lastUpdate > 60) {
+        if (now - lastUpdate > 30) {
             updateShips();
             getApiShots()
             setLastUpdate(now);
@@ -128,7 +129,7 @@ function Scene() {
         if (explore) {
             setSimulationState((prev) => ({ ...prev, scale: 100 }))
             ship.moveShip()
-            camera.position.set(ship.view.x, ship.view.y, ship.view.z)
+            camera.position.set(ship.view.x, ship.view.y + 0.01, ship.view.z)
             camera.lookAt(ship.position.x, ship.position.y, ship.position.z)
         } else {
             setSimulationState((prev) => ({ ...prev, scale: 1 }))
@@ -152,7 +153,7 @@ function Scene() {
                 shots.map((shot, index) => {
                     return (
                         <mesh key={index} position={[shot.position.x, shot.position.y, shot.position.z]}>
-                            <sphereGeometry args={[0.001, 64, 64]} />
+                            <sphereGeometry args={[0.0004, 64, 64]} />
                             <meshStandardMaterial
                                 color="red"
                                 emissive="red"
@@ -183,6 +184,18 @@ function Scene() {
                     />
                 )
             ))}
+
+                <mesh position={[1, 0.1, 1]}>
+                <sphereGeometry args={[0.01, 128, 128]} />
+                    <meshStandardMaterial
+                        map={useLoader(THREE.TextureLoader, '/maps/ship.jpg')}
+                        //color="white"
+                        //emissive="white"
+                        //emissiveIntensity={light}
+                        //decay={1}
+                    />
+                </mesh>
+            
             <ambientLight intensity={0.04} />
             <pointLight position={[0, 0, 0]} intensity={10} decay={1} />
             <Environment files="/maps/stars.jpg" background />
