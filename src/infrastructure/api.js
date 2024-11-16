@@ -6,12 +6,12 @@ export default class Api {
     constructor() { }
 
     async get(url) {
-        const response = await fetch(this.development_url + url)
+        const response = await fetch(this.production_url + url)
         return response.json()
     }
 
     async post(url, data) {
-        const response = await fetch(this.development_url + url, {
+        const response = await fetch(this.production_url + url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ export default class Api {
 
     async getImage(name) {
         try {
-            const response = await fetch(this.development_url + '/images/' + name);
+            const response = await fetch(this.production_url + '/images/' + name);
 
             if (!response.ok) {
                 throw new Error(`Error al obtener la imagen: ${response.statusText}`);
