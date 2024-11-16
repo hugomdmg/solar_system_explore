@@ -6,6 +6,7 @@ import planets from '../infrastructure/data_planets'
 import Planet from './Planet'
 import Gravity from '../infrastructure/gravity'
 import Ship from '../infrastructure/ship'
+import Shot from '../infrastructure/shot';
 import Api from '../infrastructure/api';
 
 let G = 6.674 * Math.pow(10, -11) / Math.pow(10, 4)
@@ -19,95 +20,44 @@ planets.forEach((planet) => {
     }
 })
 
-function Scene() {
+export default function Scene() {
+    const gravity = new Gravity(G)
+    const api = new Api()
     const { camera } = useThree()
     const orbitControlsRef = useRef()
     const [bodies, setBodies] = useState(planets)
-    const [lastUpdate, setLastUpdate] = useState(Date.now());
+    const [lastUpdate, setLastUpdate] = useState(Date.now())
     const [simulationState, setSimulationState] = useState({
         selectedPlanet: bodies[0],
-        t: 200000,
+        t: -200000,
         explore: false,
         scale: 1
     })
-    const gravity = new Gravity(G)
-    const api = new Api()
-    const [ships, setShips] = useState([]);
-
-    //----------------------------
-
-    const [userId, setUserId] = useState(Math.random())
-    const [ship, setShip] = useState(() => {
-        const newShip = new Ship()
-        newShip.userId = Math.random()
-        return newShip
-    })
+    const [ships, setShips] = useState([])
     const [shots, setShots] = useState([])
-
-    const getApiShots = async () => {
-        try {
-            let result = await api.getShotsData()
-            setShots(result.value);
-
-        } catch (error) {
-            console.error("Error:", error);
-        }
-    }
+    const [ship, setShip] = useState(new Ship())
 
     const updateShips = async () => {
-        try {
-            const data = {
-                userId: ship.userId,
-                R: ship.R,
-                position: ship.position
-            }
-            const result = await api.getShips(data);
-            const updatedShips = result.value.map((shipData) => {
-                let newShip = new Ship(shipData);
-                newShip.setShipHorientation();
-                return newShip;
-            });
-
-            setShips(updatedShips);
-
-        } catch (error) {
-            console.error("Error:", error);
-        }
+        setShots(await api.getShotsData());
+        const result = await api.getShips(ship.getData());
+        const updatedShips = result.map((shipData) => {
+            let newShip = new Ship(shipData);
+            newShip.setShipHorientation();
+            return newShip;
+        });
+        setShips(updatedShips);
     };
 
-    const handlePlanetClick = (planet) => {
-        setSimulationState((prev) => ({ ...prev, selectedPlanet: planet }))
-    }
-
-    const adjustTimeScale = (increase) => {
-        setSimulationState((prev) => ({
-            ...prev,
-            t: prev.t <= 500000 ? prev.t + (increase ? 100000 : -100000) : prev.t + (increase ? 500000 : -500000)
-        }))
-    }
+    const adjustTimeScale = (increase) => { setSimulationState((prev) => ({ ...prev, t: prev.t + increase })) }
 
     const handleKeyDown = useCallback((event) => {
         ship.actionShip(event)
         switch (event.key) {
-            case 'x': adjustTimeScale(true); break;
-            case 'z': adjustTimeScale(false); break;
-            case 't':
-                setSimulationState((prev) => ({ ...prev, explore: !prev.explore }))
-                break;
-            case 'f':
-                let newShot = {
-                    userId: userId,
-                    id: Math.random(),
-                    position: ship.position,
-                    velocity: {
-                        x: ship.direction.x * 0.01 + ship.velocity.vx,
-                        y: ship.direction.y * 0.01 + ship.velocity.vy,
-                        z: ship.direction.z * 0.01 + ship.velocity.vz
-                    }
-                };
-                api.getShots(newShot)
-                break;
-            default: break;
+            case 'x': adjustTimeScale(100000); break
+            case 'z': adjustTimeScale(-100000); break
+            case 't': setSimulationState((prev) => ({ ...prev, explore: !prev.explore })); break
+            case 'f': api.sendShots(new Shot(ship)); break
+            default: break
         }
     })
 
@@ -116,12 +66,10 @@ function Scene() {
         return () => window.removeEventListener('keydown', handleKeyDown)
     }, [handleKeyDown, ship])
 
-
-    useFrame(() => {
+    useFrame( () => {
         const now = Date.now();
         if (now - lastUpdate > 30) {
             updateShips();
-            getApiShots()
             setLastUpdate(now);
         }
 
@@ -136,7 +84,6 @@ function Scene() {
         }
 
         setBodies((prevPlanets) => gravity.gravitationalField(prevPlanets, t))
-
         bodies.forEach((body) => {
             if (body.name === selectedPlanet.name && !explore) {
                 const { x, y, z } = body.position
@@ -147,9 +94,14 @@ function Scene() {
         })
     })
 
-
     return (
         <>
+            <mesh position={[1, 0.1, 1]}>
+                <sphereGeometry args={[0.01, 128, 128]} />
+                <meshStandardMaterial
+                    map={useLoader(THREE.TextureLoader, '/maps/ship.jpg')}
+                />
+            </mesh>
             {
                 shots.map((shot, index) => {
                     return (
@@ -168,12 +120,12 @@ function Scene() {
                 ships.map((n_ship, index) => {
                     if (n_ship.userId != ship.userId) {
                         return (
-                            <Line key={index} points={n_ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
+                            <Line key={index} points={n_ship.getPoints()} color="skyblue" lineWidth={2} />
                         )
                     }
                 })
             }
-            <Line points={ship.getPoints().slice(-100)} color="skyblue" lineWidth={2} />
+            <Line points={ship.getPoints()} color="skyblue" lineWidth={2} />
             {bodies.map((planet, index) => (
                 (
                     <Planet
@@ -181,17 +133,10 @@ function Scene() {
                         key={index}
                         planet={planet}
                         scale={simulationState.scale}
-                        onClick={() => handlePlanetClick(planet)}
+                        onClick={() => setSimulationState((prev) => ({ ...prev, selectedPlanet: planet }))}
                     />
                 )
             ))}
-
-            <mesh position={[1, 0.1, 1]}>
-                <sphereGeometry args={[0.01, 128, 128]} />
-                <meshStandardMaterial
-                    map={useLoader(THREE.TextureLoader, '/maps/ship.jpg')}
-                />
-            </mesh>
 
             <ambientLight intensity={0.04} />
             <pointLight position={[0, 0, 0]} intensity={10} decay={1} />
@@ -204,5 +149,3 @@ function Scene() {
         </>
     )
 }
-
-export default Scene

@@ -22,30 +22,30 @@ export default class Api {
     }
 
     async getShips(ship) {
-        return await this.post('/ships', ship)
+        let result = await this.post('/ships', ship)
+        return result.value
     }
 
-    async getShots(shot) {
+    async sendShots(shot) {
         return await this.post('/shots', shot)
     }
 
     async getShotsData() {
-        return await this.get('/shots-data')
+        let result =  await this.get('/shots-data')
+        return result.value
     }
 
     async getImage(name) {
         try {
             const response = await fetch(this.production_url + '/images/' + name);
-
             if (!response.ok) {
-                throw new Error(`Error al obtener la imagen: ${response.statusText}`);
+                throw new Error(`Error obtaining image: ${response.statusText}`);
             }
-
             const blob = await response.blob();
             return URL.createObjectURL(blob);
         } catch (error) {
-            console.error('Error en la solicitud de la imagen:', error);
-            return null; // Puedes devolver null o manejar el error según lo necesites.
+            console.error('Error:', error);
+            return null
         }
     }
 

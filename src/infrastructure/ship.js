@@ -1,7 +1,7 @@
 import Dinamics from "./dinamics"
 export default class Ship extends Dinamics {
 
-    userId = 0
+    userId = Math.random()
 
     R = {
         ux: { x: 1, y: 0, z: 0 },
@@ -29,32 +29,8 @@ export default class Ship extends Dinamics {
         { z: 0.002, x: 0.003, y: 0.00 },
         { z: -0.002, x: 0.003, y: 0.00 },
         { z: -0.001, x: 0.012, y: -0.002 },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // { z: 0.003, x: -0.006, y: 0.0001 },
-        // { z: -0.003, x: -0.006, y: 0.0001 },
-        // { z: -0.003, x: 0.003, y: 0 },
-        // { z: 0.003, x: 0.003, y: 0 },
-        // { z: 0, x: 0.003, y: 0.003 },
-        // { z: -0.003, x: 0.003, y: 0 }
     ];
 
-    radius = 0.5;
-    mass = 0;
     position = { x: 0.1, y: 0, z: 0 };
     velocity = { vx: 0, vy: 0, vz: 0 };
     direction = { x: 1, y: 0, z: 0 };
@@ -66,6 +42,15 @@ export default class Ship extends Dinamics {
             this.position = data.position
             this.R = data.R
             this.userId = data.userId
+        }
+    }
+
+    getData(){
+        return {
+            userId: this.userId,
+            position: this.position,
+            velocity: this.velocity,
+            R: this.R
         }
     }
 
