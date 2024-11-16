@@ -30,7 +30,6 @@ const Planet = ({ scale, planet, render, onClick }) => {
                     transparent
                     opacity={0.1}
                     emissiveIntensity={1}
-                //visible={planet.name != 'moon'}
                 />
             </mesh>}
             {(render || scale == 100) && (
