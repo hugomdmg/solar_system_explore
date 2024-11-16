@@ -6,7 +6,7 @@ import planets from '../infrastructure/data_planets'
 import Planet from './Planet'
 import Gravity from '../infrastructure/gravity'
 import Ship from '../infrastructure/ship'
-import Api from '../infrastructure/api'
+import Api from '../infrastructure/api';
 
 let G = 6.674 * Math.pow(10, -11) / Math.pow(10, 4)
 
@@ -147,6 +147,7 @@ function Scene() {
         })
     })
 
+
     return (
         <>
             {
@@ -185,17 +186,13 @@ function Scene() {
                 )
             ))}
 
-                <mesh position={[1, 0.1, 1]}>
+            <mesh position={[1, 0.1, 1]}>
                 <sphereGeometry args={[0.01, 128, 128]} />
-                    <meshStandardMaterial
-                        map={useLoader(THREE.TextureLoader, '/maps/ship.jpg')}
-                        //color="white"
-                        //emissive="white"
-                        //emissiveIntensity={light}
-                        //decay={1}
-                    />
-                </mesh>
-            
+                <meshStandardMaterial
+                    map={useLoader(THREE.TextureLoader, '/maps/ship.jpg')}
+                />
+            </mesh>
+
             <ambientLight intensity={0.04} />
             <pointLight position={[0, 0, 0]} intensity={10} decay={1} />
             <Environment files="/maps/stars.jpg" background />
