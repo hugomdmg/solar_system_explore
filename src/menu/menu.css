@@ -1,0 +1,109 @@
+/* menuContainer */
+.menu-container {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #282c34;
+    color: #fff;
+    z-index: 1000;
+}
+
+/* menuBar */
+.menu-bar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 30px;
+    align-items: center;
+}
+
+/* tabsContainer */
+.tabs-container {
+    display: flex;
+}
+
+/* tab */
+.tab {
+    position: relative;
+    margin: 0 10px;
+}
+
+/* tabButton */
+.tab-button {
+    background-color: #222;
+    color: #0ff;
+    border: 1px solid #0ff;
+    padding: 10px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    transition: all 0.3s;
+}
+
+/* contentBox */
+.content-box {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 300px;
+    overflow: hidden;
+    background-color: rgba(15, 22, 59, 0.9);
+    border-radius: 6px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0, 255, 255, 0.2);
+    border: 1px solid #0ff;
+    z-index: 10;
+}
+
+/* controlPanel */
+.control-panel {
+    background-color: rgba(23, 35, 59, 0.8);
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #0ff;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+}
+
+/* panelTitle */
+.panel-title {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #0ff;
+    text-align: center;
+}
+
+/* panelText */
+.panel-text {
+    font-size: 14px;
+    margin: 5px 0;
+    color: #d4d4d4;
+}
+
+/* key */
+.key {
+    background-color: #0ff;
+    color: #000;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-weight: bold;
+    margin: 0 3px;
+}
+
+/* linksContainer */
+.links-container {
+    display: flex;
+    justify-content: space-between;
+    margin-left: auto;
+}
+
+/* link */
+.link {
+    color: #0ff;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 15px;
+    font-size: 16px;
+}

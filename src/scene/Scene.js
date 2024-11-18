@@ -56,7 +56,7 @@ export default function Scene() {
             case 'x': adjustTimeScale(100000); break
             case 'z': adjustTimeScale(-100000); break
             case 't': setSimulationState((prev) => ({ ...prev, explore: !prev.explore })); break
-            case 'f': api.sendShots(new Shot(ship)); break
+            case 'p': api.sendShots(new Shot(ship)); break
             default: break
         }
     })
