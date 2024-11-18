@@ -43,10 +43,7 @@ export default function Menu() {
                                         Press <span className="key">F</span> to brake.
                                     </p>
                                     <p className="panel-text">
-                                        Press <span className="key">P</span> to toggle special mode.
-                                    </p>
-                                    <p className="panel-text">
-                                        Press <span className="key">T</span> to fire your ship's weapons.
+                                        Press <span className="key">P</span> to fire your ship's weapons.
                                     </p>
                                     <p className="panel-text">
                                         When you're in ship mode, you will see other players' ships that are also exploring the system. 
