@@ -19,10 +19,11 @@ planets.forEach((planet) => {
         planet.velocity.vz = Math.sqrt(G * planets[0].mass / planet.position.x) / 3
     }
 })
+const api = new Api()
+console.log(api.get('/send-email'))
 
 export default function Scene() {
     const gravity = new Gravity(G)
-    const api = new Api()
     const { camera } = useThree()
     const orbitControlsRef = useRef()
     const [bodies, setBodies] = useState(planets)
@@ -64,7 +65,7 @@ export default function Scene() {
     useEffect(() => {
         window.addEventListener('keydown', handleKeyDown)
         return () => window.removeEventListener('keydown', handleKeyDown)
-    }, [handleKeyDown, ship])
+    }, [])
 
     useFrame( () => {
         const now = Date.now();
