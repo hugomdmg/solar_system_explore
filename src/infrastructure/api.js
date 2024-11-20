@@ -1,17 +1,16 @@
 export default class Api {
 
-    development_url = 'http://localhost:3000'
-    production_url = 'https://solar-system-api-seven.vercel.app'
+    url = process.env.REACT_APP_URL
 
     constructor() { }
 
     async get(url) {
-        const response = await fetch(this.production_url + url)
+        const response = await fetch(this.url + url)
         return response.json()
     }
 
     async post(url, data) {
-        const response = await fetch(this.production_url + url, {
+        const response = await fetch(this.url + url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -37,7 +36,7 @@ export default class Api {
 
     async getImage(name) {
         try {
-            const response = await fetch(this.production_url + '/images/' + name);
+            const response = await fetch(this.url + '/images/' + name);
             if (!response.ok) {
                 throw new Error(`Error obtaining image: ${response.statusText}`);
             }
