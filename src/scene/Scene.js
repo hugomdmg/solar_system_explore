@@ -6,8 +6,8 @@ import planets from '../infrastructure/data_planets'
 import Planet from './Planet'
 import Gravity from '../infrastructure/gravity'
 import Ship from '../infrastructure/ship'
-import Shot from '../infrastructure/shot';
-import Api from '../infrastructure/api';
+import Shot from '../infrastructure/shot'
+import Api from '../infrastructure/api'
 
 let G = 6.674 * Math.pow(10, -11) / Math.pow(10, 4)
 
