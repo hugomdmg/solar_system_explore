@@ -1,7 +1,7 @@
 import React from 'react';
 import { Canvas } from '@react-three/fiber';
-import Menu from './menu/Menu'; // Suponiendo que tu menú esté en otro archivo
-import Scene from './scene/Scene'; // Suponiendo que tu escena esté definida
+import Menu from './menu/Menu';
+import Scene from './scene/Scene';
 
 export default function App() {
     return (
@@ -20,16 +20,16 @@ export default function App() {
 const styles = {
     app: {
         display: 'flex',
-        flexDirection: 'column', // El menú y el canvas estarán en columnas
-        height: '100vh', // Ocupar toda la altura de la ventana
-        width: '100vw', // Ocupar todo el ancho de la ventana
-        overflow: 'hidden', // Evitar scroll no deseado
-        backgroundColor: '#000', // Fondo oscuro por defecto
+        flexDirection: 'column',
+        height: '100vh',
+        width: '100vw',
+        overflow: 'hidden',
+        backgroundColor: '#000',
     },
     canvas: {
-        flex: 1, // El canvas ocupa todo el espacio restante
-        display: 'block', // Asegurar que se renderiza como un bloque
-        width: '100%', // Asegurar que ocupa el ancho completo
-        height: 'calc(100vh - 50px)', // Altura restante, considerando un menú de 50px
+        flex: 1,
+        display: 'block',
+        width: '100%',
+        height: 'calc(100vh - 50px)'
     },
 };
